@@ -2,7 +2,8 @@
 
 using namespace std;
 
-void showIt(string[], int);
+void showIt(string[], int);	//function for showing contents of string
+
 int appendToAll(string a[], int n, string value)
 {
 	if(n<0)			//trivial case of n being negative
@@ -99,7 +100,7 @@ int differ(const string a[], int n1, const string a2[], int n2)
 	int i = 0, j = 0;
 	while(i < n1 && j < n2)
 	{
-		if(a[i] != a2[j])
+		if(a[i] != a2[j])	//is mismatch found return position
 			return i;
 		i++; j++;
 	}
