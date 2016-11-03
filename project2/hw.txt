@@ -1,0 +1,83 @@
+Solutions to Homework 2 (output begins from next line of numbering, a line break is left between each answer)
+1)
+endlendl
+grendel
+
+2)
+It prints a right triangle
+
+3)
+#include<iostream>
+
+using namespace std;
+
+int main()
+{
+    int side;
+
+    cout << "Enter a number: ";
+    cin >> side;
+
+    while(int i = 0 < side)
+    {
+        while(int j = i >= 0)
+        {
+            cout << "#";
+            j--;
+        }
+        cout << "\n";
+        i++;
+    }
+}
+
+4)
+#include<iostream>
+
+using namespace std;
+
+int main()
+{
+    int side;
+    cout << "Enter a number: ";
+    cin >> side;
+
+    int i = 0;
+
+    do
+    {
+        if(i>=0)
+        {
+            int j = i;
+            do
+            {
+               cout << "#";
+               j--;
+            }while(j >= 0);
+            cout << "\n";
+            i++;
+        }
+    }while(i > side);
+}
+
+5)
+switch(codeSection)
+{
+    case 281:
+        cout << "bigamy";
+        break;
+    case 321:
+        cout << "selling illegal lottery tickets";
+        break;
+    case 322:
+        cout << "selling illegal lottery tickets";
+        break;
+    case 383:
+        cout << "selling rancid butter";
+        break;
+    case 598:
+        cout << "wounding a bird in a public cemetery";
+        break;
+    default:
+        cout << "some other crime";
+}
+

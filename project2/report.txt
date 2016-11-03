@@ -1,0 +1,15 @@
+OBSTACLES FACED
+Since I had prior experience in programming in C++, most of the program seemed straightforward to me. One part, however, was especially tricky: in calculation of license fee of UAE and Turkey with revenue over 50, because I had to include the check for country in both the if blocks.
+
+TEST DATA (each line is a test case, except UAE and Turkey cases)
+0 revenue for any  country (xyz, 0, Columbia)   //0 is a trivial case and should be checked in most number based programs, just in case division by zero occurs during runtime
+Revenue under 20 for any country (xyz, 15, India)   //since algorithm changes for revenue under 20, this is important to test
+Revenue over 20, but not over 50 for UAE and Turkey (xyz, 35, UAE) and (xyz, 36, Turkey)  //since algorithm changes for revenue over 20 and for different countries, this is important to test
+Revenue over 20, but not over 50 for any other country (xyz, 46, USA)
+Revenue over 50 for UAE and Turkey (xaf, 55, UAE) and (fgs, 78, Turkey) //since algorithm changes for revenue over 50 and for different countries, this is important to test
+Revenue over 50 for any other country (apasfa, 85, Canada)
+Negative revenue (adpg, -654, Tibet)    //this is a trivial case, hence it must be tested
+Empty identification (,12, Tibet)   //this is a trivial case, and hence it must be tested
+Empty country (af,51,)  //this is a trivial case, and hence it must be tested
+Giving letters as input into revenue (aqwr, lol, USA)   //the compilor expects an integer input, and there's no exception handling for string input
+Invalid country name (asas, 13, TrumpLand)  //There is no dictionary implemented to check whether the country entered is valid or not, and hence any string input entered into the country variable will be accepted by the program

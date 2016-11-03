@@ -1,0 +1,13 @@
+I. Inputting the number of surveyors as 0 will give a runtime error because of division by 0 during calculation of percentage of voters of Hillary/Trump.
+Another possible input which would produce an unexpected output is if any of the input prompts is given a negative integer. 
+Along with this, using an integer for number of voters of Hillary/Trump higher than the total number of voters will give a nonsensical output.
+
+II. Error introduced in logic_error.cpp
+In calculation of percentage of voters of Hillary/Trump, the multiplication of 100.0 has been shifted to the end of the expression, leading to an incorrect output during runtime.
+
+III. Errors introduced in compile_error.cpp
+In line 9, the statement has not been terminated by a semi-colon.
+In line 13, extraction operator has been used, while instead an insertion operator would be appropriate.
+
+For line 9, the g++ compiler reports that the declaration was not terminated correctly, and suggests putting a semi-colon to correct this issue.
+For line 13, g++ reports that the wrong operand has been used. Although it doesn't make a suggestion to make it compile correctly, it very clearly points out the part of the line which causes the error. 

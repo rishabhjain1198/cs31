@@ -1,0 +1,59 @@
+OBSTACLES
+------------------------------------------
+
+I had to figure out a way to accomodate both single digit and double digit votes.
+
+A consistent thing to keep in mind was to not let my program go out of bounds.
+
+Another part of the program which I needed to work on was to know which type of data I was expecting when checking correct syntax. I solved this by switching a tester variable.
+
+DESIGN
+------------------------------------------
+
+hasCorrectSyntax(pollData)
+    loop through string and test each chunk, data type of chunk is indicated by tester variable which is initially set to state
+        if tester is state
+            if chunk is invalid
+                break and return false
+        else if tester is votes
+            check for single or double digits
+            if digit isnt found
+                break and return false
+        else if tester is party
+            if current char is not alpha
+                break and return false
+        
+countVotes(pollData, party)
+    if !hasCorrectSyntax(pollData)
+        break and return false
+    if party is not alpha
+        break and return false
+
+    loop through polldata, only checking digits
+        if digit is found
+            find out if votes is single digit or double digit
+            if party is same as desired
+                add it tempvote to voteCount
+
+TEST DATA
+---------------------------------------------
+TX38RCA55DMs6rnY29dUT06L r //generic correct string to test, which contains letters of mixed case, as well as testing both single and double digit votes
+
+TX38CA55DMs6rnY29dUT06L r //testing what happens if party is not provided for a state forecast
+
+TX0rca23l r		//testing what happens if 0 votes are given in a state forecast
+
+ms25rCa00l l		//testing what happens if 0 votes are given in the form of double digits in a state forecast
+
+TX384CA55DMs6rnY29dUT06L r //testing what happens if more than 2 digit number is given
+
+ms09jtx45u h		//testing what happens if a party if given which is not present in the poll data string
+
+TX38RCA55DMs6rnY29dUT06 d //testing an incomplete string
+
+TX38RCA55DMs6rnY29dUT06L 5 //testing what happens when non-alpha party is given
+
+tx38 rca55d d	//testing what happens if a whitespace is given in the poll string
+
+ d	//testing what happens if empty poll string is given
+
