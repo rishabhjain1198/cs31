@@ -32,7 +32,7 @@ int lookup(const string a[], int n, string target)
 
 int positionOfMax(const string a[], int n)
 {
-	if(n<0) return -1;
+	if(n<=0) return -1;
 
 	int maxPos = 0;		//maximum value set to 0th position by default until new max value is found
 
@@ -49,8 +49,8 @@ int positionOfMax(const string a[], int n)
 
 int rotateLeft(string a[], int n, int pos)
 {
-	if(n<0) return -1;
-	if(pos>=n) return pos;
+	if(n == 0 && pos == 0) return 0;
+	if(n<0 || pos>= n || pos<0) return -1;
 
 	string temp = a[pos];
 
@@ -117,6 +117,8 @@ int subsequence(const string a1[], int n1, const string a2[], int n2)
 {
 	if(n1<0) return -1;
 	else if(n2<0) return -1;
+
+	if(n1 == 0 && n2 == 0) return 0;
 
 	for(int i = 0; i < n1; i++)
 	{
@@ -192,11 +194,9 @@ void showIt(string a[], int n)	//function for showing contents of a string of ar
 	}
 }
 
+
 int main()
 {
-	string tester [] = {"gary", "gary", "gary", "donald", "jill", "hillary", "tim", "evan", "bill"
-	};
-	cout<<separate(tester, 9, "gary");
-	showIt(tester, 9);
-	return 0;
+    return 0;
 }
+
