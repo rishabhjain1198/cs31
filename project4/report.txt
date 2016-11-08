@@ -1,0 +1,47 @@
+OBSTACLES FACED
+---------------------------------------------
+I had to accomodate for negative length of string in every function. 
+
+Debugging took a lot of time since there were a lot of functions to test.
+
+Another important thing to remember was that in the separator function, string equal to the separator had to between the strings less than the separator and the strings greater than the separator
+
+TEST DATA
+----------------------------------------------
+(Even though I know the contents of a string cannot be simply passed into a function using curly braces, I chose to represent my test data as such for convenience for both myself and the grader)
+
+appendToAll({"hillary", "gary", "donald", "jill", "evan"}, 5, "!!!") //testing general functionality 
+
+appendToAll({"hillary", "gary", "donald", "jill", "evan"}, -1, "!!!") //testing what happens with negative string length
+
+lookup({"hillary", "gary", "donald", "jill", "evan"}, 5, "hillary") //testing general functionality 
+
+lookup({"hillary", "gary", "donald", "jill", "evan"}, 5, "target") //testing what happens with target string which is not found
+
+positionOfMax({"hillary", "gary", "donald", "jill", "evan"}, 5) //testing general functionality 
+
+positionOfMax({"hillary", "hillary", "hillary"}, 3) //testing what happens with array containing identical strings
+
+rotateLeft({"hillary", "gary", "donald", "jill", "evan"}, 5, 3) //testing general functionality
+
+countRuns({"hillary", "hillary", "hillary", "jill", "evan"}, 5) //testing general functionality
+
+rotateLeft({"hillary", "gary", "donald", "jill", "evan"}, 5, 6) //testing what happens when pos is greater than string length
+
+flip({"hillary", "gary", "donald", "jill", "evan"}, 5) //testing general functionality
+
+differ({"hillary", "gary", "donald", "jill", "evan"}, 5, {"hillary", "gary", "donald", "llij"}, 4) //testing general functionality
+
+differ({"hillary", "gary", "donald", "jill", "evan"}, 5, {"hillary", "gary", "donald", "jill", "evan"}, 5) //testing what happens if arrays are identical
+
+subsequence({"hillary", "gary", "donald", "jill", "evan"}, 5, {"hillary", "gary", "donald"}, 3) //testing general functionality
+
+subsequence({"hillary", "gary", "donald", "jill", "evan"}, 5, {"hillary", "gary", "donald", "jill", "evan", "henry"}, 6) //testing what happens if target substring is larger than original string
+
+lookupAny({"hillary", "gary", "donald", "jill", "evan"}, 5, {"hillary", "gary", "donald"}, 3) //testing general functionality
+
+lookupAny({"hillary", "gary", "donald", "jill", "evan"}, 5, {"hilla""}, 1) //testing what happens if match is not supposed to be found
+
+separate({"hillary", "gary", "donald", "jill", "evan", "bill"}, 6, "gary") //testing general functionality
+
+separate({"hillary", "evan", "donald", "jill", "evan", "bill"}, 6, "evan") //testing what happens if separator is equal to some of the contents of the array

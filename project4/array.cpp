@@ -1,4 +1,5 @@
 #include<iostream>
+#include<cassert>
 
 using namespace std;
 
@@ -20,7 +21,7 @@ int lookup(const string a[], int n, string target)
 	if(n<0) return -1;
 	for(int i = 0; i < n; i++)
 	{
-		if(a[i] == target)	//can also use if(!a[i].compare(targer));
+		if(a[i] == target)	//can also use if(!a[i].compare(target));
 		{
 			return i;	//if match found, returns position
 		}
@@ -33,7 +34,7 @@ int positionOfMax(const string a[], int n)
 {
 	if(n<0) return -1;
 
-	int maxPos = 0;
+	int maxPos = 0;		//maximum value set to 0th position by default until new max value is found
 
 	for(int i = 0; i < n; i++)
 	{
@@ -49,6 +50,7 @@ int positionOfMax(const string a[], int n)
 int rotateLeft(string a[], int n, int pos)
 {
 	if(n<0) return -1;
+	if(pos>=n) return pos;
 
 	string temp = a[pos];
 
@@ -97,21 +99,25 @@ int differ(const string a[], int n1, const string a2[], int n2)
 {
 	if(n1<0) return -1;
 	else if(n2<0) return -1;
+
 	int i = 0, j = 0;
+
 	while(i < n1 && j < n2)
 	{
-		if(a[i] != a2[j])	//is mismatch found return position
+		if(a[i] != a2[j])	//if mismatch found return position
 			return i;
 		i++; j++;
 	}
-	if(n1<n2) return n1;
+	if(n1<n2) return n1;	//if no mismatch found, return smaller of n1 and n2
 	else return n2;
 }
+
 
 int subsequence(const string a1[], int n1, const string a2[], int n2)
 {
 	if(n1<0) return -1;
 	else if(n2<0) return -1;
+
 	for(int i = 0; i < n1; i++)
 	{
 		int j = i; int p = 0;
@@ -132,37 +138,52 @@ int lookupAny(const string a1[], int n1, const string a2[], int n2)
 
 	for(int i = 0; i < n1; i++)
 	{
-		for(int j = 0l; j < n2; j++)
+		for(int j = 0; j < n2; j++)
 		{
-			if(a1[i] == a2[j])
+			if(a1[i] == a2[j])	//if match found return position
 				return i;
 		}
 	}
 
-	return -1;
+	return -1;	//if match not found return -1
 }
 
 int separate(string a[], int n, string separator)
 {
 	if(n<0) return -1;
 
-	int i = 0; int starter = 0;
+	int i = 0; int starter = 0;	//starter variable contains position of first value greater than separator
+	int equals = 0; //keeps track of number of values equal to separator
 	while(i < n)
 	{
-		if(a[i] < separator)
+		if(a[i] <= separator)	
 		{
-			string temp = a[starter];
+			string temp = a[starter];	//switch value of starter position and value of a[i], increment starter since one more value is found which is less than or equal to separator
 			a[starter] = a[i];
 			a[i] = temp;
+
+			if(a[starter] == separator) equals++;
+
+			if(starter != 0 && a[starter] != separator)	//this is required to accomodate for strings which are equal to the separator. It checks backwards from the starter position until it acquires a position which is not equal to the separator. It then swaps with the position which came just after the separator position
+			{
+				int tpos = starter-1;
+				while(a[tpos] == separator && tpos>-1)
+				{
+					tpos--;
+				}
+				tpos++;
+				string tempp; tempp = a[starter];
+				a[starter] = a[tpos]; a[tpos] = tempp;
+			}
 			starter++;
 		}
 		i++;
 	}
 
-	return starter;
+	return starter-equals;
 }
 
-void showIt(string a[], int n)
+void showIt(string a[], int n)	//function for showing contents of a string of arrays, made for debugging
 {
 	cout<<endl;
 	for(int i = 0;  i < n; i++)
@@ -173,11 +194,9 @@ void showIt(string a[], int n)
 
 int main()
 {
-	string tester [] = {
-		"gary", "hillary", "jill", "donald"
+	string tester [] = {"gary", "gary", "gary", "donald", "jill", "hillary", "tim", "evan", "bill"
 	};
-	cout<<separate(tester, 4, "hillary");
-	showIt(tester, 4);
-
+	cout<<separate(tester, 9, "gary");
+	showIt(tester, 9);
 	return 0;
-}	
+}
