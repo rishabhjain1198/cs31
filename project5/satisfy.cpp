@@ -189,6 +189,12 @@ int main()
     char test1w2[TEST1_NRULES][MAX_WORD_LENGTH+1] = {
         "scientist", "robot",    "plot",      "mad"
     };
+    char test2w1[TEST1_NRULES][MAX_WORD_LENGTH+1] = {
+        "a", "b", "c", "d"
+    };
+    char test2w2[TEST1_NRULES][MAX_WORD_LENGTH+1] = {
+        "e", "f", "g", "h"
+    };
     int test1dist[TEST1_NRULES] = {
         2,           4,          1,           13
     };
@@ -205,6 +211,7 @@ int main()
     assert(calculateSatisfaction(test1w1, test1w2, test1dist, TEST1_NRULES,
                                  "That scientist said two mad scientists suffer from deranged-robot fever.") == 0);
     assert(normalizeRules(test1w1, test1w2, test1dist, 4) == 4);
+    assert(calculateSatisfaction(test2w1, test2w2, test1dist, TEST1_NRULES, "a e b juf af f oppopoppopo establih pos d h") == 3);
     cout << "All tests succeeded" << endl;
 }
 
