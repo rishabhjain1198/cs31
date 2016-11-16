@@ -1,6 +1,5 @@
 #include<iostream>
 #include<cassert>
-#include<cstring>
 
 using namespace std;
 
@@ -181,7 +180,6 @@ int calculateSatisfaction(const char word1[][MAX_WORD_LENGTH+1], const char word
 
 	return ruleCount;
 }
-/*
 int main()
 {
     const int TEST1_NRULES = 4;
@@ -217,15 +215,15 @@ int main()
     cout << "All tests succeeded" << endl;
 }
 
-*/
+/*
 int main()
 {
-	char word1 [] [MAX_WORD_LENGTH+1] = {"mad", "deranged", "nefarious"};
-	char word2 [] [MAX_WORD_LENGTH+1] = {"scientist", "robot", "plot"};
-
-	int dist [] = {-99, 4, 1};
-
-	cout<<normalizeRules(word1, word2, dist, 3);
+	char word1 [] [MAX_WORD_LENGTH+1] = {"e"};
+	char word2 [] [MAX_WORD_LENGTH+1] = {"f"};
+	int distance [] = {-1};
+	int nRules = 1;
+	normalizeRules(word1, word2, distance ,nRules);
 
 	return 0;
 }
+*/
