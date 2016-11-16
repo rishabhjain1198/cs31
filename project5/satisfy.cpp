@@ -106,19 +106,21 @@ int normalizeRules(char word1[][MAX_WORD_LENGTH+1], char word2[][MAX_WORD_LENGTH
 
 int calculateSatisfaction(const char word1[][MAX_WORD_LENGTH+1], const char word2[][MAX_WORD_LENGTH+1], const int distance [], int nRules, const char document[])
 {
+	if(nRules < 1) return 0;
 	int ruleCount = 0;	//keeps track of how many rules are satisfied
 	for(int i = 0; i < nRules; i++)
 	{
+		if(distance[i] == 0) continue;
 		int j = 0; int letterTracker = 0; char tempWord [MAX_WORD_LENGTH+1]; int ruler = 0; bool doot = 1; int distanceTracker = 0;
 		while(document[j] != '\0' && doot)	//doot keeps track of whether rule is satisfied or not
 		{
-			if(isalpha(document[j]) || document[j] == '-' || document[j] == '\'')	//this checks whether current character is alpha, or - or ' and adds them to the temporary word if they are
+			if(isalpha(document[j]))	//this checks whether current character is alpha, and adds it to temporary word if it is
 			{
-				if (isalpha(document[j])) tempWord[letterTracker] = tolower(document[j]);	//converts alphabets to lower case
+				tempWord[letterTracker] = tolower(document[j]);	//converts alphabets to lower case
 				letterTracker++;	//this keeps track of the size of the word
 			}
 
-			else if(letterTracker)	//check if a temp word actually exists
+			else if(letterTracker && document[j] == ' ')	//check if a temp word actually exists
 			{
 		                tempWord[letterTracker] = '\0'; letterTracker = 0;	//distance tracker variable keeps track of how many words have gone by since last matched word
 				distanceTracker++;	//ruler variable keeps track of which words were matched, ie. if word 1 was matched with word2 of a rule, then ruler = 2, if word 1 is matched with word 1 of a rule, then ruler = 1
@@ -136,7 +138,7 @@ int calculateSatisfaction(const char word1[][MAX_WORD_LENGTH+1], const char word
 					}
 				}
 
-				if(!strcmp(tempWord, word2[i]))	//symmetrical to previous code block, but for the case which word is matched with word2 of rule
+				if(!strcmp(tempWord, word2[i]) && distanceTracker!=0)	//symmetrical to previous code block, but for the case which word is matched with word2 of rule, but there is check of distanceTracker to make sure that in case the rule has 2 identical words, the rule isn't satisfied by a single match
 				{
 					if(ruler == 1 && distanceTracker <= distance[i])
 					{
@@ -166,7 +168,7 @@ int calculateSatisfaction(const char word1[][MAX_WORD_LENGTH+1], const char word
 		    ruler = 1;		//this is required for the case that distance is 0 and both words of the rule are same, and match is found
         }
         
-        if(!strcmp(tempWord, word2[i]))
+        if(!strcmp(tempWord, word2[i]) && distanceTracker != 0)
         {
             if(ruler == 1 && distanceTracker <= distance[i])
             {
