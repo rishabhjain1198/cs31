@@ -1,10 +1,10 @@
 OBSTACLES FACED
 -----------------------------------------------------------
-A major obstacle faced was to accomodate for 0 distances.
+A major obstacle faced was to accomodate for identical words in the same rule.
 
 The complexity of my program is very bad, since it runs through the entire document again for each rule, but I was unable to find a good solution. However it takes time, my implementation works.
 
-Another major obstacle was to accomodate for composite words, ie. words like "super-terrified" and "it's" which contain a non alpha character but are a word nonetheless. 
+Another major obstacle was to accomodate for composite words, ie. words like "super-terrified" and "it's" which contain a non alpha character in between.
 
 
 DESCRIPTION
@@ -25,7 +25,7 @@ return number of rules copied
 
 
 CALCULATE SATISFACTION
-I ran through the entire document separately for each rule. Here, I would keep a temporary word, and would keep adding alphabets (and some other characters) to the word until I came across a non alpha character. Then I would try to match the word with the current words of the current rule while also keeping track of the distance.
+I ran through the entire document separately for each rule. Here, I would keep a temporary word, and would keep adding alphabets to the word until I came across a whitespace. Then I would try to match the word with the current words of the current rule while also keeping track of the distance.
 
 run through all rules
 	go through entire document
@@ -63,10 +63,13 @@ calculatesatisfaction({"m", "deranged", "nefarious", "have"}, {"scientist", "rob
 calculatesatisfaction({"mad", "deranged", "nefarious", "have"}, {"scientist", "robot", "plot", "mad"}, {0, 4, 1, 13}, 4, "The mad scientist unleashed a deranged evil giant robot")	//testing what happens when distance of a rule is 0
 
 
-calculatesatisfaction({"mad", "deranged", "nefarious", "have"}, {"mad", "robot", "plot", "mad"}, {0, 4, 1, 13}, 4, "The mad scientist unleashed a deranged evil giant robot")	//testing when distance is 0 but a valid match exists
+calculatesatisfaction({"mad", "deranged", "nefarious", "have"}, {"mad", "robot", "plot", "mad"}, {0, 4, 1, 13}, 4, "The mad scientist unleashed a deranged evil giant robot")	//testing when distance is 0 but word is identical
 
 
 calculatesatisfaction({"mad", "deranged", "nefarious", "have"}, {"scientist", "robot", "plot", "mad"}, {2, 4, 1, 13}, 4, "The mad insane's scientist unleashed a deranged evil giant robot")	//testing what happens when a compound word exists between two valid rule words. If the compound word is mistakenly considered two separate words, first rule wouldn't be satisfied
 
 
 calculatesatisfaction({"mad", "deranged", "nefarious", "have"}, {"scientist", "robot", "plot", "mad"}, {2, 4, 1, 13}, 4, The Mad scientist unleashed a deranged evil giant robot")	//testing what happens with case variation
+
+
+calculatesatisfaction({"mad", "deranged", "nefarious", "have"}, {"mad", "robot", "plot", "mad"}, {2, 4, 1, 13}, 4, The Mad scientist mad a deranged evil giant robot") //testing what happens when rule with identical words is supposed to be satisfied
