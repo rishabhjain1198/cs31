@@ -15,7 +15,7 @@ int normalizeRules(char word1[][MAX_WORD_LENGTH+1], char word2[][MAX_WORD_LENGTH
 
 	for(int i = 0; i < nRules; i++)
 	{
-		if(distance[i] < 0) break;
+		if(distance[i] < 0) continue;
 		
 		//checking each character for isalpha and converting to lower case
 		int j = 0; bool doot = 1;
