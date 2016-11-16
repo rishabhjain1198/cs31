@@ -57,7 +57,7 @@ int normalizeRules(char word1[][MAX_WORD_LENGTH+1], char word2[][MAX_WORD_LENGTH
 				if(!strcmp(word2[i], tempWord2[j]))	//if both word1 and word2 of 2 rules respectively are same, it replaces the distance with the higher value and sets doot to 1, ie. match was found
 				{
 					doot = 1;
-					if(tempDistance[j] > distance[i])
+					if(tempDistance[j] < distance[i])
 					{
 						tempDistance[j] = distance[i];
 					}
@@ -71,9 +71,9 @@ int normalizeRules(char word1[][MAX_WORD_LENGTH+1], char word2[][MAX_WORD_LENGTH
 				if(!strcmp(word1[i], tempWord2[j]))
 				{
 					doot = 1;
-					if(tempDistance[j] > distance[i])
+					if(tempDistance[j] < distance[i])
 					{			
-						tempDistance[j] = distance[i];	//sets distance to minimum value
+						tempDistance[j] = distance[i];	//sets distance to maximum value
 					}
 				}
 			}
@@ -214,6 +214,7 @@ int main()
                                  "That scientist said two mad scientists suffer from deranged-robot fever.") == 0);
     assert(normalizeRules(test1w1, test1w2, test1dist, 4) == 4);
     assert(calculateSatisfaction(test2w1, test2w2, test1dist, TEST1_NRULES, "a e b juf af f oppopoppopo establih pos d h") == 3);
+    assert(normalizeRules(test1w1, test1w2, test1dist, -1) == 0);
     cout << "All tests succeeded" << endl;
 }
 
