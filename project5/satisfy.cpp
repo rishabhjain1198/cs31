@@ -225,7 +225,10 @@ int main()
 
 	int dist [] = {-99, 4, 1};
 
-	cout<<normalizeRules(word1, word2, dist, 3);
+	int r = normalizeRules(word1, word2, dist, 3);
+	cout<<r;
+
+
 
 	return 0;
 }
