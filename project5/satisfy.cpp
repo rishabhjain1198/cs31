@@ -28,6 +28,7 @@ int normalizeRules(char word1[][MAX_WORD_LENGTH+1], char word2[][MAX_WORD_LENGTH
 			else word1[i][j] = tolower(word1[i][j]);	//convert it to lowercase in case it is alphabet
 			j++;
 		}
+		if(j == 0) doot = 0;	//accounting for empty word1
 
 		j = 0;	//time to go through the second word
 
@@ -40,6 +41,8 @@ int normalizeRules(char word1[][MAX_WORD_LENGTH+1], char word2[][MAX_WORD_LENGTH
 			else word2[i][j] = tolower(word2[i][j]);
 			j++;
 		}
+
+		if(j == 0) doot = 0;	//accounting for empty word2
 		
 		if(!doot) continue;	//if a non alphabet character was found, skip this rule
 			
