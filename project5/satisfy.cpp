@@ -111,7 +111,7 @@ int calculateSatisfaction(const char word1[][MAX_WORD_LENGTH+1], const char word
 	for(int i = 0; i < nRules; i++)
 	{
 		if(distance[i] == 0) continue;
-		int j = 0; int letterTracker = 0; char tempWord [MAX_WORD_LENGTH+1]; int ruler = 0; bool doot = 1; int distanceTracker = 0;
+		int j = 0; int letterTracker = 0; char tempWord [200]; int ruler = 0; bool doot = 1; int distanceTracker = 0;
 		while(document[j] != '\0' && doot)	//doot keeps track of whether rule is satisfied or not
 		{
 			if(isalpha(document[j]))	//this checks whether current character is alpha, and adds it to temporary word if it is
