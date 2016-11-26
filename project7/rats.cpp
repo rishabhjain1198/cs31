@@ -191,24 +191,61 @@ bool Rat::isDead() const
 
 void Rat::move()
 {
-    
-    if(m_pelletsConsumed == 1)
+    int dir = randInt(0, 4);
+    if(m_pelletsConsumed == 0)
     {
         //must move
+	int status = m_arena -> getCellStatus(m_row, m_col);
+	if(status == 2) 
+		m_arena -> setCellStatus(m_row, m_col, 0);
+	else
+		m_arena -> setCellStatus(m_row, m_col, status-1);
+
+	attemptMove(*m_arena, dir, m_row, m_col);
+	status = m_arena -> getCellStatus(m_row, m_col);
+	if(status == 1)
+	{ 
+		m_pelletsConsumed++;
+		m_arena -> setCellStatus(m_row, m_col, 2);
+	}
+	else if(status ==  0)
+	{ 
+		m_arena -> setCellStatus(m_row, m_col, 2);
+	}
+	else
+		m_arena -> setCellStatus(m_row, m_col, status+1);
     }
-    else{
+    else if(m_pelletsConsumed == 1) 
+    {
         if(movedLastTime)
         {
             movedLastTime = 0;
             return ;
         }
         movedLastTime = 1;
-        
-        //,m,kmkjint dir = randInt();
-        
         //must move
+	int status = m_arena -> getCellStatus(m_row, m_col);
+	if(status == 2) 
+		m_arena -> setCellStatus(m_row, m_col, 0);
+	else
+		m_arena -> setCellStatus(m_row, m_col, status-1);
+
+	attemptMove(*m_arena, dir, m_row, m_col);
+	status = m_arena -> getCellStatus(m_row, m_col);
+	if(status == 1)
+	{ 
+		m_pelletsConsumed++;
+		m_arena -> setCellStatus(m_row, m_col, 2);
+	}
+	else if(status ==  0)
+	{ 
+		m_arena -> setCellStatus(m_row, m_col, 2);
+	}
+	else
+		m_arena -> setCellStatus(m_row, m_col, status+1);
+    
     }
-    // TODO:
+
     //   Return without moving if the rat has eaten one poison pellet (so
     //   is supposed to move only every other turn) and this is a turn it
     //   does not move.
@@ -243,16 +280,12 @@ Player::Player(Arena* ap, int r, int c)
 
 int Player::row() const
 {
-    // TODO: TRIVIAL:  Return what row the Player is at
-    // Delete the following line and replace it with the correct code.
-    return 1;  // This implementation compiles, but is incorrect.
+	return m_row;
 }
 
 int Player::col() const
 {
-    // TODO: TRIVIAL:  Return what column the Player is at
-    // Delete the following line and replace it with the correct code.
-    return 1;  // This implementation compiles, but is incorrect.
+	return m_col;
 }
 
 string Player::dropBrain()
@@ -265,7 +298,7 @@ string Player::dropBrain()
 
 string Player::move(int dir)
 {
-    // TODO:  Attempt to move the player one step in the indicated
+    //  Attempt to move the player one step in the indicated
     //        direction.  If this fails,
     //        return "Player couldn't move; player stands."
     //        A player who moves onto a rat dies, and this
@@ -273,14 +306,45 @@ string Player::move(int dir)
     //        Otherwise, return one of "Player moved north.",
     //        "Player moved east.", "Player moved south.", or
     //        "Player moved west."
-    return "Player couldn't move; player stands.";  // This implementation compiles, but is incorrect.
+    if(!attemptMove(*m_arena, dir, m_row, m_col))
+    	return "Player couldn't move; player stands.";  // This implementation compiles, but is incorrect.
+    if(m_arena->getCellStatus(m_row, m_col) > 1)
+	return "Player walked into a rat and died.";    
+
+    switch(dir)
+    { 
+	    case NORTH:
+	    { 
+		    return "Player moved north.";
+		    break;
+	    }
+
+	    case SOUTH:
+	    { 
+		    return "Player moved south.";
+		    break;
+	    }
+	    
+	    case EAST:
+	    { 
+		    return "Player moved east.";
+		    break;
+	    }
+
+	    case WEST:
+	    { 
+		    return "Player moved west.";
+		    break;
+	    }
+	    
+	    default: return "Player couldn't move; player stands.";
+    }
+
 }
 
 bool Player::isDead() const
 {
-    // TODO: Return whether the Player is dead
-    // Delete the following line and replace it with the correct code.
-    return false;  // This implementation compiles, but is incorrect.
+	return m_dead;
 }
 
 void Player::setDead()
@@ -312,21 +376,20 @@ Arena::Arena(int nRows, int nCols)
 
 Arena::~Arena()
 {
-    // TODO:  Deallocate the player and all remaining dynamically allocated rats
+    //   Deallocate the player and all remaining dynamically allocated rats
+    delete m_player;
+    for(int i = 0; i < m_nRats; i++)
+	    delete m_rats[i];
 }
 
 int Arena::rows() const
 {
-    // TODO: TRIVIAL:  Return the number of rows in the arena
-    // Delete the following line and replace it with the correct code.
-    return 1;  // This implementation compiles, but is incorrect.
+	return m_rows;
 }
 
 int Arena::cols() const
 {
-    // TODO: TRIVIAL:  Return the number of columns in the arena
-    // Delete the following line and replace it with the correct code.
-    return 1;  // This implementation compiles, but is incorrect.
+	return m_cols;
 }
 
 Player* Arena::player() const
@@ -336,9 +399,7 @@ Player* Arena::player() const
 
 int Arena::ratCount() const
 {
-    // TODO: TRIVIAL:  Return the number of rats in the arena
-    // Delete the following line and replace it with the correct code.
-    return 0;  // This implementation compiles, but is incorrect.
+	return m_nRats;
 }
 
 int Arena::getCellStatus(int r, int c) const
@@ -349,9 +410,11 @@ int Arena::getCellStatus(int r, int c) const
 
 int Arena::numberOfRatsAt(int r, int c) const
 {
-    // TODO:  Return the number of rats at row r, column c
-    // Delete the following line and replace it with the correct code.
-    return 0;  // This implementation compiles, but is incorrect.
+	int status = getCellStatus(r, c);
+	if(status > 1)
+		return status-1;
+	else
+		return 0;
 }
 
 void Arena::display(string msg) const
@@ -364,10 +427,22 @@ void Arena::display(string msg) const
         for (c = 1; c <= cols(); c++)
             displayGrid[r-1][c-1] = (getCellStatus(r,c) == EMPTY ? '.' : '*');
     
-    // Indicate each rat's position
-    // TODO:  If one rat is at some grid point, set the displayGrid char
-    //        to 'R'.  If it's 2 though 8, set it to '2' through '8'.
-    //        For 9 or more, set it to '9'.
+    for(int i = 1; i < r; i++)
+    { 
+	    for(int j = 1; j < c; j++)
+	    { 
+		    int status = numberOfRatsAt(i, j);
+		    if(status > 0)
+		    { 
+			if(status == 1)
+				displayGrid[i-1][j-1] = 'R';
+			else if(status > 1 && status < 9)
+				displayGrid[i-1][j-1] = char(status + '0');
+			else if(status >= 9)
+				displayGrid[i-1][j-1] = '9';
+		    }
+	    }
+    }
     
     // Indicate player's position
     if (m_player != nullptr)
@@ -416,9 +491,19 @@ bool Arena::addRat(int r, int c)
     // If there are MAXRATS existing rats, retirn false.  Otherwise,
     // dynamically allocate a new rat at coordinates (r,c).  Save the
     // pointer to the newly allocated rat and return true.
+     
+    if(m_nRats >= MAXRATS) 
+	    return false;
+
+    Rat *tat = new Rat(this, r, c);	
+    m_rats[m_nRats] = tat;
+    m_nRats++;
+    if(getCellStatus(r, c) == EMPTY)
+	    setCellStatus(r, c, 2);
+    else
+	    setCellStatus(r, c, getCellStatus(r, c) + 1);
     
-    // TODO:  Implement this.
-    return false;  // This implementation compiles, but is incorrect.
+    return true;
 }
 
 bool Arena::addPlayer(int r, int c)
@@ -441,10 +526,15 @@ bool Arena::addPlayer(int r, int c)
 void Arena::moveRats()
 {
     // Move all rats
-    // TODO:  Move each rat.  Mark the player as dead if necessary.
+    //   Move each rat.  Mark the player as dead if necessary.
     //        Deallocate any dead dynamically allocated rat.
     
     // Another turn has been taken
+    for(int i = 0; i < m_nRats; i++)
+    { 
+	    m_rats[i] -> move();
+    }
+
     m_turns++;
 }
 
@@ -600,9 +690,45 @@ bool decodeDirection(char ch, int& dir)
 // return true.
 bool attemptMove(const Arena& a, int dir, int& r, int& c)
 {
-    // TODO:  Implement this function
     // Delete the following line and replace it with the correct code.
-    return false;  // This implementation compiles, but is incorrect.
+    switch(dir)
+    { 
+	    case NORTH:
+	    { 
+		if(!((r-1)>= 1 && c >= 1 && (r-1)<=a.rows() && c<=a.rows()))
+			return false;
+		r--;
+		break;
+	    }
+ 
+	    case SOUTH:
+	    { 
+		if(!((r+1)>= 1 && c >= 1 && (r+1)<=a.rows() && c<=a.rows()))
+			return false;
+		r++;
+		break;
+	    }
+ 
+	    case EAST:
+	    { 
+		if(!((r)>= 1 && (c+1)>= 1 && (r)<=a.rows() && (c+1)<=a.rows()))
+			return false;
+		c++;
+		break;
+	    }
+ 
+	    case WEST:
+	    { 
+		if(!((r)>= 1 && (c-1)>= 1 && (r)<=a.rows() && (c-1)<=a.rows()))
+			return false;
+		c--;
+		break;
+	    }
+	    default: return false;
+
+    } 
+
+    return true;
 }
 
 // Recommend a move for a player at (r,c):  A false return means the
