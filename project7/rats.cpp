@@ -214,6 +214,17 @@ void Rat::move()
 	}
 	else
 		m_arena -> setCellStatus(m_row, m_col, status+1);
+
+	//TIME TO CHECK IF RAT MOVED INTO PLAYER
+	
+	int prow = m_arena -> player() -> row();
+	int pcol = m_arena -> player() -> col();
+
+	if(m_row == prow && m_col == pcol)
+	{
+		m_arena -> player() -> setDead();
+        }
+
     }
     else if(m_pelletsConsumed == 1) 
     {
@@ -243,6 +254,16 @@ void Rat::move()
 	}
 	else
 		m_arena -> setCellStatus(m_row, m_col, status+1);
+
+	//TIME TO CHECK IF RAT MOVED INTO PLAYER
+	
+	int prow = m_arena -> player() -> row();
+	int pcol = m_arena -> player() -> col();
+
+	if(m_row == prow && m_col == pcol)
+	{
+		m_arena -> player() -> setDead();
+        }
     
     }
 
@@ -309,7 +330,10 @@ string Player::move(int dir)
     if(!attemptMove(*m_arena, dir, m_row, m_col))
     	return "Player couldn't move; player stands.";  // This implementation compiles, but is incorrect.
     if(m_arena->getCellStatus(m_row, m_col) > 1)
+    {
+	setDead();
 	return "Player walked into a rat and died.";    
+    }
 
     switch(dir)
     { 
@@ -695,7 +719,7 @@ bool attemptMove(const Arena& a, int dir, int& r, int& c)
     { 
 	    case NORTH:
 	    { 
-		if(!((r-1)>= 1 && c >= 1 && (r-1)<=a.rows() && c<=a.rows()))
+		if(!((r-1)>= 1 && c >= 1 && (r-1)<=a.rows() && c<=a.cols()))
 			return false;
 		r--;
 		break;
@@ -703,7 +727,7 @@ bool attemptMove(const Arena& a, int dir, int& r, int& c)
  
 	    case SOUTH:
 	    { 
-		if(!((r+1)>= 1 && c >= 1 && (r+1)<=a.rows() && c<=a.rows()))
+		if(!((r+1)>= 1 && c >= 1 && (r+1)<=a.rows() && c<=a.cols()))
 			return false;
 		r++;
 		break;
@@ -711,7 +735,7 @@ bool attemptMove(const Arena& a, int dir, int& r, int& c)
  
 	    case EAST:
 	    { 
-		if(!((r)>= 1 && (c+1)>= 1 && (r)<=a.rows() && (c+1)<=a.rows()))
+		if(!((r)>= 1 && (c+1)>= 1 && (r)<=a.rows() && (c+1)<=a.cols()))
 			return false;
 		c++;
 		break;
@@ -719,7 +743,7 @@ bool attemptMove(const Arena& a, int dir, int& r, int& c)
  
 	    case WEST:
 	    { 
-		if(!((r)>= 1 && (c-1)>= 1 && (r)<=a.rows() && (c-1)<=a.rows()))
+		if(!((r)>= 1 && (c-1)>= 1 && (r)<=a.rows() && (c-1)<=a.cols()))
 			return false;
 		c--;
 		break;
