@@ -190,7 +190,7 @@ bool Rat::isDead() const
 
 void Rat::move()
 {
-    int dir = randInt(0, 4);
+    int dir = randInt(0, 3);
     if(m_pelletsConsumed == 0)
     {
         //must move
@@ -854,7 +854,7 @@ bool recommendMove(const Arena& a, int r, int c, int& bestDir)
 	    ratCount[EAST] = canRatMoveToCell(a, r, c+1, sratLocation);
     }
 
-    int min = ratCountAtPos;
+    int min = ratCountAtPos; bool toMove = 0;
 
     for(int i = 0; i < 4; i++)
     {
@@ -864,6 +864,7 @@ bool recommendMove(const Arena& a, int r, int c, int& bestDir)
 		    {
 			    min = ratCount[i];
 			    bestDir = i;
+                toMove = 1;
 		    }
 	    }
 
@@ -871,13 +872,14 @@ bool recommendMove(const Arena& a, int r, int c, int& bestDir)
 	    {
 		    min = ratCount[i];
 		    bestDir = i;
+            toMove = 1;
 	    }
     }
 
-    if(min == ratCountAtPos)
-	    return false;
-
-    return true;
+    if(toMove)
+        return true;
+    
+    return false;
     // Your replacement implementation should do something intelligent.
     // You don't have to be any smarter than the following, although
     // you can if you want to be:  If staying put runs the risk of a
