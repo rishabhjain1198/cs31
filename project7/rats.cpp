@@ -19,7 +19,6 @@ using namespace std;
 ///////////////////////////////////////////////////////////////////////////
 // Manifest constants
 ///////////////////////////////////////////////////////////////////////////
-
 const int MAXROWS = 20;            // max number of rows in the arena
 const int MAXCOLS = 20;            // max number of columns in the arena
 const int MAXRATS = 100;           // max number of rats allowed
@@ -759,12 +758,126 @@ bool attemptMove(const Arena& a, int dir, int& r, int& c)
 // recommendation is that the player should drop a poison pellet and not
 // move; otherwise, this function sets bestDir to the recommended
 // direction to move and returns true.
+int canRatMoveToCell(const Arena& a, int r, int c, int ratLocation [])
+{
+	int rats = 0;
+	int arow = a.rows(), acol = a.cols();
+	for(int i = 0; i < 4; i++)
+	{
+		ratLocation[i] = 0;
+	}
+
+	if(r-1 >= 1)
+	{	
+		if(a.numberOfRatsAt(r-1, c))
+		{
+			rats+= a.numberOfRatsAt(r-1, c);
+			ratLocation[NORTH] = 1;
+		}
+		else
+			ratLocation[NORTH] = 2;	
+	}
+
+	if(c-1 >= 1)
+	{
+		if(a.numberOfRatsAt(r, c-1))
+		{
+			rats+= a.numberOfRatsAt(r, c-1);
+			ratLocation[WEST] = 1;
+		}
+		else
+			ratLocation[WEST] = 2;	
+	}
+
+	if(r+1 <= arow)
+	{
+		if(a.numberOfRatsAt(r+1, c))
+		{
+			rats+= a.numberOfRatsAt(r+1, c);
+			ratLocation[SOUTH] = 1;
+		}
+		else
+			ratLocation[SOUTH] = 2;
+	}
+
+	if(c+1 <= acol)
+	{
+		if(a.numberOfRatsAt(r, c+1))
+		{
+			rats+= a.numberOfRatsAt(r, c+1);
+			ratLocation[EAST] = 1;
+		}
+		else
+			ratLocation[EAST] = 2;
+	}
+
+	return rats;
+}
 bool recommendMove(const Arena& a, int r, int c, int& bestDir)
 {
     // TODO:  Implement this function
     // Delete the following line and replace it with your code.
-    return false;  // This implementation compiles, but is incorrect.
+    int arow = a.rows(), acol = a.cols();;
+    int ratCountAtPos;
+    bool pelletPresent = a.getCellStatus(r, c) == HAS_POISON ? 1 : 0;
+
+    int ratLocation[4], sratLocation[4], ratCount[4];
+
+    for(int i = 0; i<4; i++)
+    {
+	    ratCount[i] = MAXRATS;
+    }
     
+    if(canRatMoveToCell(a, r, c, ratLocation) == 0)
+	    return false;
+
+    ratCountAtPos = canRatMoveToCell(a, r, c, ratLocation);
+
+    if(ratLocation[NORTH] == 2)
+    {
+	    //calculate rats which can move to that cell
+	    ratCount[NORTH] = canRatMoveToCell(a, r-1, c, sratLocation);
+    }
+    
+    if(ratLocation[WEST] == 2)
+    {
+	    ratCount[WEST] = canRatMoveToCell(a, r, c-1, sratLocation);
+    }
+
+    if(ratLocation[SOUTH] == 2)
+    {
+	    ratCount[SOUTH] = canRatMoveToCell(a, r+1, c, sratLocation);
+    }
+    
+    if(ratLocation[EAST] == 2)
+    {
+	    ratCount[EAST] = canRatMoveToCell(a, r, c+1, sratLocation);
+    }
+
+    int min = ratCountAtPos;
+
+    for(int i = 0; i < 4; i++)
+    {
+	    if(pelletPresent)
+	    {
+		    if(ratCount[i] <= min)
+		    {
+			    min = ratCount[i];
+			    bestDir = i;
+		    }
+	    }
+
+	    else if(ratCount[i] < min)
+	    {
+		    min = ratCount[i];
+		    bestDir = i;
+	    }
+    }
+
+    if(min == ratCountAtPos)
+	    return false;
+
+    return true;
     // Your replacement implementation should do something intelligent.
     // You don't have to be any smarter than the following, although
     // you can if you want to be:  If staying put runs the risk of a
