@@ -868,23 +868,33 @@ bool recommendMove(const Arena& a, int r, int c, int& bestDir)
 
     int min = ratCountAtPos; bool toMove = 0;
 
-    for(int i = 0; i < 4; i++)
+    bool randomizer[4] = {0,0,0,0}; int times = 0;
+
+    while(times < 4)
     {
+	    int j = randInt(0,3);
+
+	    if(randomizer[j] == 0)
+	    {
+		    randomizer[j] = 1;
+		    times++;
 	    if(pelletPresent)
 	    {
-		    if(ratCount[i] <= min)
+		    if(ratCount[j] <= min)
 		    {
-			    min = ratCount[i];
-			    bestDir = i;
+			    min = ratCount[j];
+			    bestDir = j;
                             toMove = 1;
 		    }
 	    }
 
-	    else if(ratCount[i] < min)
+	    else if(ratCount[j] < min)
 	    {
-		    min = ratCount[i];
-		    bestDir = i;
+		    min = ratCount[j];
+		    bestDir = j;
     	            toMove = 1;
+	    }
+
 	    }
     }
 
