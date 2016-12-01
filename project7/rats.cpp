@@ -50,7 +50,6 @@ public:
     int  col() const;
     bool isDead() const;
     
-    
     // Mutators
     void move();
     
@@ -75,7 +74,7 @@ public:
     bool isDead() const;
     
     // Mutators
-    string dropBrain();
+    string dropPoisonPellet();
     string move(int dir);
     void   setDead();
     
@@ -170,7 +169,7 @@ Rat::Rat(Arena* ap, int r, int c)
     m_row = r;
     m_col = c;
     m_pelletsConsumed = 0;
-    movedLastTime = 0;
+    movedLastTime = 1;
 }
 
 int Rat::row() const
@@ -196,39 +195,39 @@ void Rat::move()
     if(m_pelletsConsumed == 0)
     {
         //must move
-	int status = m_arena -> getCellStatus(m_row, m_col);
-	if(status == 2) 
-		m_arena -> setCellStatus(m_row, m_col, 0);
-	else
-		m_arena -> setCellStatus(m_row, m_col, status-1);
-
-	attemptMove(*m_arena, dir, m_row, m_col);
-	status = m_arena -> getCellStatus(m_row, m_col);
-	if(status == HAS_POISON)
-	{ 
-        m_pelletsConsumed++;
-        if(!isDead())
-            m_arena -> setCellStatus(m_row, m_col, 2);
-	}
-	else if(status ==  EMPTY)
-	{ 
-		m_arena -> setCellStatus(m_row, m_col, 2);
-	}
-	else
-		m_arena -> setCellStatus(m_row, m_col, status+1);
-
-	//TIME TO CHECK IF RAT MOVED INTO PLAYER
-	
-	int prow = m_arena -> player() -> row();
-	int pcol = m_arena -> player() -> col();
-
-	if(m_row == prow && m_col == pcol)
-	{
-		m_arena -> player() -> setDead();
+        int status = m_arena -> getCellStatus(m_row, m_col);
+        if(status == 2)
+            m_arena -> setCellStatus(m_row, m_col, 0);
+        else
+            m_arena -> setCellStatus(m_row, m_col, status-1);
+        
+        attemptMove(*m_arena, dir, m_row, m_col);
+        status = m_arena -> getCellStatus(m_row, m_col);
+        if(status == HAS_POISON)
+        {
+            m_pelletsConsumed++;
+            if(!isDead())
+                m_arena -> setCellStatus(m_row, m_col, 2);
         }
-
+        else if(status ==  EMPTY)
+        {
+            m_arena -> setCellStatus(m_row, m_col, 2);
+        }
+        else
+            m_arena -> setCellStatus(m_row, m_col, status+1);
+        
+        //TIME TO CHECK IF RAT MOVED INTO PLAYER
+        
+        int prow = m_arena -> player() -> row();
+        int pcol = m_arena -> player() -> col();
+        
+        if(m_row == prow && m_col == pcol)
+        {
+            m_arena -> player() -> setDead();
+        }
+        
     }
-    else if(m_pelletsConsumed == 1) 
+    else if(m_pelletsConsumed == 1)
     {
         if(movedLastTime)
         {
@@ -237,39 +236,39 @@ void Rat::move()
         }
         movedLastTime = 1;
         //must move
-	int status = m_arena -> getCellStatus(m_row, m_col);
-	if(status == 2) 
-		m_arena -> setCellStatus(m_row, m_col, 0);
-	else
-		m_arena -> setCellStatus(m_row, m_col, status-1);
-
-	attemptMove(*m_arena, dir, m_row, m_col);
-	status = m_arena -> getCellStatus(m_row, m_col);
-	if(status == HAS_POISON)
-	{ 
-		m_pelletsConsumed++;
-        if(!isDead())
-            m_arena -> setCellStatus(m_row, m_col, 2);
-	}
-	else if(status ==  EMPTY)
-	{ 
-		m_arena -> setCellStatus(m_row, m_col, 2);
-	}
-	else
-		m_arena -> setCellStatus(m_row, m_col, status+1);
-
-	//TIME TO CHECK IF RAT MOVED INTO PLAYER
-	
-	int prow = m_arena -> player() -> row();
-	int pcol = m_arena -> player() -> col();
-
-	if(m_row == prow && m_col == pcol)
-	{
-		m_arena -> player() -> setDead();
+        int status = m_arena -> getCellStatus(m_row, m_col);
+        if(status == 2)
+            m_arena -> setCellStatus(m_row, m_col, 0);
+        else
+            m_arena -> setCellStatus(m_row, m_col, status-1);
+        
+        attemptMove(*m_arena, dir, m_row, m_col);
+        status = m_arena -> getCellStatus(m_row, m_col);
+        if(status == HAS_POISON)
+        {
+            m_pelletsConsumed++;
+            if(!isDead())
+                m_arena -> setCellStatus(m_row, m_col, 2);
         }
-    
+        else if(status ==  EMPTY)
+        {
+            m_arena -> setCellStatus(m_row, m_col, 2);
+        }
+        else
+            m_arena -> setCellStatus(m_row, m_col, status+1);
+        
+        //TIME TO CHECK IF RAT MOVED INTO PLAYER
+        
+        int prow = m_arena -> player() -> row();
+        int pcol = m_arena -> player() -> col();
+        
+        if(m_row == prow && m_col == pcol)
+        {
+            m_arena -> player() -> setDead();
+        }
+        
     }
-
+    
     //   Return without moving if the rat has eaten one poison pellet (so
     //   is supposed to move only every other turn) and this is a turn it
     //   does not move.
@@ -304,15 +303,15 @@ Player::Player(Arena* ap, int r, int c)
 
 int Player::row() const
 {
-	return m_row;
+    return m_row;
 }
 
 int Player::col() const
 {
-	return m_col;
+    return m_col;
 }
 
-string Player::dropBrain()
+string Player::dropPoisonPellet()
 {
     if (m_arena->getCellStatus(m_row, m_col) == HAS_POISON)
         return "There's already a poison pellet at this spot.";
@@ -331,47 +330,47 @@ string Player::move(int dir)
     //        "Player moved east.", "Player moved south.", or
     //        "Player moved west."
     if(!attemptMove(*m_arena, dir, m_row, m_col))
-    	return "Player couldn't move; player stands.";  // This implementation compiles, but is incorrect.
+        return "Player couldn't move; player stands.";  // This implementation compiles, but is incorrect.
     if(m_arena->getCellStatus(m_row, m_col) > 1)
     {
-	setDead();
-	return "Player walked into a rat and died.";    
+        setDead();
+        return "Player walked into a rat and died.";
     }
-
+    
     switch(dir)
-    { 
-	    case NORTH:
-	    { 
-		    return "Player moved north.";
-		    break;
-	    }
-
-	    case SOUTH:
-	    { 
-		    return "Player moved south.";
-		    break;
-	    }
-	    
-	    case EAST:
-	    { 
-		    return "Player moved east.";
-		    break;
-	    }
-
-	    case WEST:
-	    { 
-		    return "Player moved west.";
-		    break;
-	    }
-	    
-	    default: return "Player couldn't move; player stands.";
+    {
+        case NORTH:
+        {
+            return "Player moved north.";
+            break;
+        }
+            
+        case SOUTH:
+        {
+            return "Player moved south.";
+            break;
+        }
+            
+        case EAST:
+        {
+            return "Player moved east.";
+            break;
+        }
+            
+        case WEST:
+        {
+            return "Player moved west.";
+            break;
+        }
+            
+        default: return "Player couldn't move; player stands.";
     }
-
+    
 }
 
 bool Player::isDead() const
 {
-	return m_dead;
+    return m_dead;
 }
 
 void Player::setDead()
@@ -406,17 +405,17 @@ Arena::~Arena()
     //   Deallocate the player and all remaining dynamically allocated rats
     delete m_player;
     for(int i = 0; i < m_nRats; i++)
-	    delete m_rats[i];
+        delete m_rats[i];
 }
 
 int Arena::rows() const
 {
-	return m_rows;
+    return m_rows;
 }
 
 int Arena::cols() const
 {
-	return m_cols;
+    return m_cols;
 }
 
 Player* Arena::player() const
@@ -426,7 +425,7 @@ Player* Arena::player() const
 
 int Arena::ratCount() const
 {
-	return m_nRats;
+    return m_nRats;
 }
 
 int Arena::getCellStatus(int r, int c) const
@@ -437,17 +436,26 @@ int Arena::getCellStatus(int r, int c) const
 
 int Arena::numberOfRatsAt(int r, int c) const
 {
-	int status = getCellStatus(r, c);
-	if(status > 1)
-		return status-1;
-	else
-		return 0;
+    /*
+     int status = getCellStatus(r, c);
+     if(status > 1)
+     return status-1;
+     else
+     return 0;
+     */
+    int count = 0;
+    for(int i = 0; i < m_nRats; i++)
+    {
+        if(m_rats[i] -> row() == r && m_rats[i] -> col() == c)
+            count++;
+    }
+    return count;
 }
 
 void Arena::display(string msg) const
 {
     char displayGrid[MAXROWS][MAXCOLS];
-    int r, c;
+    int r = 1, c = 1;
     
     // Fill displayGrid with dots (empty) and stars (poison pellets)
     for (r = 1; r <= rows(); r++)
@@ -455,20 +463,20 @@ void Arena::display(string msg) const
             displayGrid[r-1][c-1] = (getCellStatus(r,c) == EMPTY ? '.' : '*');
     
     for(int i = 1; i < r; i++)
-    { 
-	    for(int j = 1; j < c; j++)
-	    { 
-		    int status = numberOfRatsAt(i, j);
-		    if(status > 0)
-		    { 
-			if(status == 1)
-				displayGrid[i-1][j-1] = 'R';
-			else if(status > 1 && status < 9)
-				displayGrid[i-1][j-1] = char(status + '0');
-			else if(status >= 9)
-				displayGrid[i-1][j-1] = '9';
-		    }
-	    }
+    {
+        for(int j = 1; j < c; j++)
+        {
+            int status = numberOfRatsAt(i, j);
+            if(status > 0)
+            {
+                if(status == 1)
+                    displayGrid[i-1][j-1] = 'R';
+                else if(status > 1 && status < 9)
+                    displayGrid[i-1][j-1] = char(status + '0');
+                else if(status >= 9)
+                    displayGrid[i-1][j-1] = '9';
+            }
+        }
     }
     
     // Indicate player's position
@@ -518,17 +526,17 @@ bool Arena::addRat(int r, int c)
     // If there are MAXRATS existing rats, retirn false.  Otherwise,
     // dynamically allocate a new rat at coordinates (r,c).  Save the
     // pointer to the newly allocated rat and return true.
-     
-    if(m_nRats >= MAXRATS) 
-	    return false;
-
-    Rat *tat = new Rat(this, r, c);	
+    
+    if(m_nRats >= MAXRATS)
+        return false;
+    
+    Rat *tat = new Rat(this, r, c);
     m_rats[m_nRats] = tat;
     m_nRats++;
     if(getCellStatus(r, c) == EMPTY)
-	    setCellStatus(r, c, 2);
+        setCellStatus(r, c, 2);
     else
-	    setCellStatus(r, c, getCellStatus(r, c) + 1);
+        setCellStatus(r, c, getCellStatus(r, c) + 1);
     
     return true;
 }
@@ -559,7 +567,7 @@ void Arena::moveRats()
     // Another turn has been taken
     for(int i = 0; i < m_nRats; i++)
     {
-	    m_rats[i] -> move();
+        m_rats[i] -> move();
         if(m_rats[i] -> isDead())
         {
             m_nRats--;
@@ -567,7 +575,7 @@ void Arena::moveRats()
             i--;
         }
     }
-
+    
     m_turns++;
 }
 
@@ -656,12 +664,12 @@ string Game::takePlayerTurn()
             if (recommendMove(*m_arena, player->row(), player->col(), dir))
                 return player->move(dir);
             else
-                return player->dropBrain();
+                return player->dropPoisonPellet();
         }
         else if (playerMove.size() == 1)
         {
             if (tolower(playerMove[0]) == 'x')
-                return player->dropBrain();
+                return player->dropPoisonPellet();
             else if (decodeDirection(playerMove[0], dir))
                 return player->move(dir);
         }
@@ -726,42 +734,42 @@ bool attemptMove(const Arena& a, int dir, int& r, int& c)
 {
     // Delete the following line and replace it with the correct code.
     switch(dir)
-    { 
-	    case NORTH:
-	    { 
-		if(!((r-1)>= 1 && c >= 1 && (r-1)<=a.rows() && c<=a.cols()))
-			return false;
-		r--;
-		break;
-	    }
- 
-	    case SOUTH:
-	    { 
-		if(!((r+1)>= 1 && c >= 1 && (r+1)<=a.rows() && c<=a.cols()))
-			return false;
-		r++;
-		break;
-	    }
- 
-	    case EAST:
-	    { 
-		if(!((r)>= 1 && (c+1)>= 1 && (r)<=a.rows() && (c+1)<=a.cols()))
-			return false;
-		c++;
-		break;
-	    }
- 
-	    case WEST:
-	    { 
-		if(!((r)>= 1 && (c-1)>= 1 && (r)<=a.rows() && (c-1)<=a.cols()))
-			return false;
-		c--;
-		break;
-	    }
-	    default: return false;
-
-    } 
-
+    {
+        case NORTH:
+        {
+            if(!((r-1)>= 1 && c >= 1 && (r-1)<=a.rows() && c<=a.cols()))
+                return false;
+            r--;
+            break;
+        }
+            
+        case SOUTH:
+        {
+            if(!((r+1)>= 1 && c >= 1 && (r+1)<=a.rows() && c<=a.cols()))
+                return false;
+            r++;
+            break;
+        }
+            
+        case EAST:
+        {
+            if(!((r)>= 1 && (c+1)>= 1 && (r)<=a.rows() && (c+1)<=a.cols()))
+                return false;
+            c++;
+            break;
+        }
+            
+        case WEST:
+        {
+            if(!((r)>= 1 && (c-1)>= 1 && (r)<=a.rows() && (c-1)<=a.cols()))
+                return false;
+            c--;
+            break;
+        }
+        default: return false;
+            
+    }
+    
     return true;
 }
 
@@ -771,133 +779,133 @@ bool attemptMove(const Arena& a, int dir, int& r, int& c)
 // direction to move and returns true.
 int canRatMoveToCell(const Arena& a, int r, int c, int ratLocation [])
 {
-	int rats = 0;
-	int arow = a.rows(), acol = a.cols();
-	for(int i = 0; i < 4; i++)
-	{
-		ratLocation[i] = 0;
-	}
-
-	if(r-1 >= 1)
-	{	
-		if(a.numberOfRatsAt(r-1, c))
-		{
-			rats+= a.numberOfRatsAt(r-1, c);
-			ratLocation[NORTH] = 1;
-		}
-		else
-			ratLocation[NORTH] = 2;	
-	}
-
-	if(c-1 >= 1)
-	{
-		if(a.numberOfRatsAt(r, c-1))
-		{
-			rats+= a.numberOfRatsAt(r, c-1);
-			ratLocation[WEST] = 1;
-		}
-		else
-			ratLocation[WEST] = 2;	
-	}
-
-	if(r+1 <= arow)
-	{
-		if(a.numberOfRatsAt(r+1, c))
-		{
-			rats+= a.numberOfRatsAt(r+1, c);
-			ratLocation[SOUTH] = 1;
-		}
-		else
-			ratLocation[SOUTH] = 2;
-	}
-
-	if(c+1 <= acol)
-	{
-		if(a.numberOfRatsAt(r, c+1))
-		{
-			rats+= a.numberOfRatsAt(r, c+1);
-			ratLocation[EAST] = 1;
-		}
-		else
-			ratLocation[EAST] = 2;
-	}
-
-	return rats;
+    int rats = 0;
+    int arow = a.rows(), acol = a.cols();
+    for(int i = 0; i < 4; i++)
+    {
+        ratLocation[i] = 0;
+    }
+    
+    if(r-1 >= 1)
+    {
+        if(a.numberOfRatsAt(r-1, c))
+        {
+            rats+= a.numberOfRatsAt(r-1, c);
+            ratLocation[NORTH] = 1;
+        }
+        else
+            ratLocation[NORTH] = 2;
+    }
+    
+    if(c-1 >= 1)
+    {
+        if(a.numberOfRatsAt(r, c-1))
+        {
+            rats+= a.numberOfRatsAt(r, c-1);
+            ratLocation[WEST] = 1;
+        }
+        else
+            ratLocation[WEST] = 2;
+    }
+    
+    if(r+1 <= arow)
+    {
+        if(a.numberOfRatsAt(r+1, c))
+        {
+            rats+= a.numberOfRatsAt(r+1, c);
+            ratLocation[SOUTH] = 1;
+        }
+        else
+            ratLocation[SOUTH] = 2;
+    }
+    
+    if(c+1 <= acol)
+    {
+        if(a.numberOfRatsAt(r, c+1))
+        {
+            rats+= a.numberOfRatsAt(r, c+1);
+            ratLocation[EAST] = 1;
+        }
+        else
+            ratLocation[EAST] = 2;
+    }
+    
+    return rats;
 }
 bool recommendMove(const Arena& a, int r, int c, int& bestDir)
 {
     // Delete the following line and replace it with your code.
-    int arow = a.rows(), acol = a.cols();;
+    
     int ratCountAtPos;
     bool pelletPresent = a.getCellStatus(r, c) == HAS_POISON ? 1 : 0;
-
+    
     int ratLocation[4], sratLocation[4], ratCount[4];
-
+    
     for(int i = 0; i<4; i++)
     {
-	    ratCount[i] = MAXRATS;
+        ratCount[i] = MAXRATS;
     }
     
-//    if(canRatMoveToCell(a, r, c, ratLocation) == 0)
-//	    return false;
-//
+    //    if(canRatMoveToCell(a, r, c, ratLocation) == 0)
+    //	    return false;
+    //
     canRatMoveToCell(a, r, c, ratLocation);
-
+    
     ratCountAtPos = canRatMoveToCell(a, r, c, ratLocation);
-
+    
     if(ratLocation[NORTH] == 2)
     {
-	    //calculate rats which can move to that cell
-	    ratCount[NORTH] = canRatMoveToCell(a, r-1, c, sratLocation);
+        //calculate rats which can move to that cell
+        ratCount[NORTH] = canRatMoveToCell(a, r-1, c, sratLocation);
     }
     
     if(ratLocation[WEST] == 2)
     {
-	    ratCount[WEST] = canRatMoveToCell(a, r, c-1, sratLocation);
+        ratCount[WEST] = canRatMoveToCell(a, r, c-1, sratLocation);
     }
-
+    
     if(ratLocation[SOUTH] == 2)
     {
-	    ratCount[SOUTH] = canRatMoveToCell(a, r+1, c, sratLocation);
+        ratCount[SOUTH] = canRatMoveToCell(a, r+1, c, sratLocation);
     }
     
     if(ratLocation[EAST] == 2)
     {
-	    ratCount[EAST] = canRatMoveToCell(a, r, c+1, sratLocation);
+        ratCount[EAST] = canRatMoveToCell(a, r, c+1, sratLocation);
     }
-
+    
     int min = ratCountAtPos; bool toMove = 0;
-
+    
     bool randomizer[4] = {0,0,0,0}; int times = 0;
-
+    
     while(times < 4)
     {
-	    int j = randInt(0,3);
-
-	    if(randomizer[j] == 0)
-	    {
-		    randomizer[j] = 1;
-		    times++;
-	    if(pelletPresent)
-	    {
-		    if(ratCount[j] <= min)
-		    {
-			    min = ratCount[j];
-			    bestDir = j;
-                            toMove = 1;
-		    }
-	    }
-
-	    else if(ratCount[j] < min)
-	    {
-		    min = ratCount[j];
-		    bestDir = j;
-    	            toMove = 1;
-	    }
-
-	    }
+        int j = randInt(0,3);
+        
+        if(randomizer[j] == 0)
+        {
+            randomizer[j] = 1;
+            times++;
+            if(pelletPresent)
+            {
+                if(ratCount[j] <= min)
+                {
+                    min = ratCount[j];
+                    bestDir = j;
+                    toMove = 1;
+                }
+            }
+            
+            else if(ratCount[j] < min)
+            {
+                min = ratCount[j];
+                bestDir = j;
+                toMove = 1;
+            }
+            
+        }
     }
-
+    
     if(toMove)
         return true;
     
@@ -925,9 +933,139 @@ bool recommendMove(const Arena& a, int r, int c, int& bestDir)
 ///////////////////////////////////////////////////////////////////////////
 // main()
 ///////////////////////////////////////////////////////////////////////////
+#include<cassert>
+/*
+#include <type_traits>
 
+
+#define CHECKTYPE(c, f, r, a)  \
+static_assert(std::is_same<decltype(&c::f), r (c::*)a>::value, \
+"FAILED: You changed the type of " #c "::" #f);  \
+[[gnu::unused]] r (c::* xxx##c##_##f) a = &c::f
+
+void thisFunctionWillNeverBeCalled()
+{
+    // If the student deleted or changed the interfaces to the public
+    // functions, this won't compile.  (This uses magic beyond the scope
+    // of CS 31.)
+    
+    Rat r(static_cast<Arena*>(0), 1, 1);
+    CHECKTYPE(Rat, row, int, () const);
+    CHECKTYPE(Rat, col, int, () const);
+    CHECKTYPE(Rat, isDead, bool, () const);
+    CHECKTYPE(Rat, move, void, ());
+    
+    Player p(static_cast<Arena*>(0), 1, 1);
+    CHECKTYPE(Player, row, int, () const);
+    CHECKTYPE(Player, col, int, () const);
+    CHECKTYPE(Player, isDead, bool, () const);
+    CHECKTYPE(Player, dropPoisonPellet, string, ());
+    CHECKTYPE(Player, move, string, (int));
+    CHECKTYPE(Player, setDead, void, ());
+    
+    Arena a(1, 1);
+    CHECKTYPE(Arena, rows, int, () const);
+    CHECKTYPE(Arena, cols, int, () const);
+    CHECKTYPE(Arena, player, Player*, () const);
+    CHECKTYPE(Arena, ratCount, int, () const);
+    CHECKTYPE(Arena, getCellStatus, int, (int,int) const);
+    CHECKTYPE(Arena, numberOfRatsAt, int, (int,int) const);
+    CHECKTYPE(Arena, display, void, (string) const);
+    CHECKTYPE(Arena, setCellStatus, void, (int,int,int));
+    CHECKTYPE(Arena, addRat, bool, (int,int));
+    CHECKTYPE(Arena, addPlayer, bool, (int,int));
+    CHECKTYPE(Arena, moveRats, void, ());
+    
+    Game g(1,1,1);
+    CHECKTYPE(Game, play, void, ());
+}
+*/
+
+void findTheRat(const Arena& a, int& r, int& c)
+{
+    if      (a.numberOfRatsAt(r-1, c) == 1) r--;
+    else if (a.numberOfRatsAt(r+1, c) == 1) r++;
+    else if (a.numberOfRatsAt(r, c-1) == 1) c--;
+    else if (a.numberOfRatsAt(r, c+1) == 1) c++;
+    else assert(false);
+}
+
+void doBasicTests()
+{
+    {
+        Arena a(10, 20);
+        a.addPlayer(2, 5);
+        Player* pp = a.player();
+        assert(pp->row() == 2  &&  pp->col() == 5  && ! pp->isDead());
+        assert(pp->move(NORTH) == "Player moved north.");
+        assert(pp->row() == 1  &&  pp->col() == 5  && ! pp->isDead());
+        assert(pp->move(NORTH) == "Player couldn't move; player stands.");
+        assert(pp->row() == 1  &&  pp->col() == 5  && ! pp->isDead());
+        pp->setDead();
+        assert(pp->row() == 1  &&  pp->col() == 5  && pp->isDead());
+    }
+    {
+        Arena a(10, 20);
+        int r = 4;
+        int c = 4;
+        
+        a.setCellStatus(r-1, c, HAS_POISON);
+        
+        
+        a.setCellStatus(r+1, c, HAS_POISON);
+        a.setCellStatus(r, c-1, HAS_POISON);
+        a.setCellStatus(r, c+1, HAS_POISON);
+        a.addRat(r, c);
+        
+        a.addPlayer(8, 18);
+        
+        assert(a.ratCount() == 1  &&  a.numberOfRatsAt(r, c) == 1);
+        
+        a.moveRats();
+        
+        assert(a.ratCount() == 1  &&  a.numberOfRatsAt(r, c) == 0);
+        
+        findTheRat(a, r, c);
+        
+        assert(a.getCellStatus(r, c) != HAS_POISON);
+        a.moveRats(); //moved left
+        
+        
+        assert(a.ratCount() == 1  &&  a.numberOfRatsAt(r, c) == 1);
+        a.moveRats();
+        
+        assert(a.ratCount() == 1  &&  a.numberOfRatsAt(r, c) == 0);
+        findTheRat(a, r, c);
+        a.moveRats();
+        assert(a.ratCount() == 1  &&  a.numberOfRatsAt(r, c) == 1);
+        a.setCellStatus(r-1, c, HAS_POISON);
+        a.setCellStatus(r+1, c, HAS_POISON);
+        a.setCellStatus(r, c-1, HAS_POISON);
+        a.setCellStatus(r, c+1, HAS_POISON);
+        a.moveRats();
+        assert(a.ratCount() == 0  &&  a.numberOfRatsAt(r, c) == 0);
+        assert(a.numberOfRatsAt(r-1, c) == 0);
+        assert(a.numberOfRatsAt(r+1, c) == 0);
+        assert(a.numberOfRatsAt(r, c-1) == 0);
+        assert(a.numberOfRatsAt(r, c+1) == 0);
+        
+        for (int k = 0; k < MAXRATS/4; k++)
+        {
+            a.addRat(7, 18);
+            a.addRat(9, 18);
+            a.addRat(8, 17);
+            a.addRat(8, 19);
+        }
+        assert(! a.player()->isDead());
+        a.moveRats();
+        assert(a.player()->isDead());
+    }
+    
+}
 int main()
 {
+    // doBasicTests(); // Remove this line after completing test.
+    // return 0;       // Remove this line after completing test.
     // Create a game
     // Use this instead to create a mini-game:   Game g(3, 5, 2);
     Game g(10, 12, 40);
