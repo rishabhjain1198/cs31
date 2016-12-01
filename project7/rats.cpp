@@ -50,6 +50,7 @@ public:
     int  col() const;
     bool isDead() const;
     
+    
     // Mutators
     void move();
     
@@ -59,6 +60,7 @@ private:
     int    m_col;
     int    m_pelletsConsumed;
     bool    movedLastTime;
+    
 };
 
 class Player
@@ -202,12 +204,13 @@ void Rat::move()
 
 	attemptMove(*m_arena, dir, m_row, m_col);
 	status = m_arena -> getCellStatus(m_row, m_col);
-	if(status == 1)
+	if(status == HAS_POISON)
 	{ 
-		m_pelletsConsumed++;
-		m_arena -> setCellStatus(m_row, m_col, 2);
+        m_pelletsConsumed++;
+        if(!isDead())
+            m_arena -> setCellStatus(m_row, m_col, 2);
 	}
-	else if(status ==  0)
+	else if(status ==  EMPTY)
 	{ 
 		m_arena -> setCellStatus(m_row, m_col, 2);
 	}
@@ -242,12 +245,13 @@ void Rat::move()
 
 	attemptMove(*m_arena, dir, m_row, m_col);
 	status = m_arena -> getCellStatus(m_row, m_col);
-	if(status == 1)
+	if(status == HAS_POISON)
 	{ 
 		m_pelletsConsumed++;
-		m_arena -> setCellStatus(m_row, m_col, 2);
+        if(!isDead())
+            m_arena -> setCellStatus(m_row, m_col, 2);
 	}
-	else if(status ==  0)
+	else if(status ==  EMPTY)
 	{ 
 		m_arena -> setCellStatus(m_row, m_col, 2);
 	}
@@ -554,8 +558,14 @@ void Arena::moveRats()
     
     // Another turn has been taken
     for(int i = 0; i < m_nRats; i++)
-    { 
+    {
 	    m_rats[i] -> move();
+        if(m_rats[i] -> isDead())
+        {
+            m_nRats--;
+            m_rats[i] = m_rats[m_nRats];
+            i--;
+        }
     }
 
     m_turns++;
@@ -575,6 +585,7 @@ void Arena::checkPos(int r, int c) const
         exit(1);
     }
 }
+
 
 ///////////////////////////////////////////////////////////////////////////
 //  Game implementation
@@ -815,7 +826,6 @@ int canRatMoveToCell(const Arena& a, int r, int c, int ratLocation [])
 }
 bool recommendMove(const Arena& a, int r, int c, int& bestDir)
 {
-    // TODO:  Implement this function
     // Delete the following line and replace it with your code.
     int arow = a.rows(), acol = a.cols();;
     int ratCountAtPos;
@@ -828,8 +838,10 @@ bool recommendMove(const Arena& a, int r, int c, int& bestDir)
 	    ratCount[i] = MAXRATS;
     }
     
-    if(canRatMoveToCell(a, r, c, ratLocation) == 0)
-	    return false;
+//    if(canRatMoveToCell(a, r, c, ratLocation) == 0)
+//	    return false;
+//
+    canRatMoveToCell(a, r, c, ratLocation);
 
     ratCountAtPos = canRatMoveToCell(a, r, c, ratLocation);
 
@@ -864,7 +876,7 @@ bool recommendMove(const Arena& a, int r, int c, int& bestDir)
 		    {
 			    min = ratCount[i];
 			    bestDir = i;
-                toMove = 1;
+                            toMove = 1;
 		    }
 	    }
 
@@ -872,7 +884,7 @@ bool recommendMove(const Arena& a, int r, int c, int& bestDir)
 	    {
 		    min = ratCount[i];
 		    bestDir = i;
-            toMove = 1;
+    	            toMove = 1;
 	    }
     }
 
